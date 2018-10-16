@@ -1,1 +1,2 @@
 - Jitterzeug in den Parametern ausrechnen, damit nicht immer Fehler kommen.
+- Herausfinden wieso die Fräse nicht fahren will, vermutlich ein Problem mit den Limits die in der INI eingestellt sind.
