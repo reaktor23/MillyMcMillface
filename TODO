@@ -1,2 +1,5 @@
 - Jitterzeug in den Parametern ausrechnen, damit nicht immer Fehler kommen.
+--- https://forum.linuxcnc.org/39-pncconf/30914-maxvel-is-too-big-error-and-stepper-settings-ques
+
 - Herausfinden wieso die Fräse nicht fahren will, vermutlich ein Problem mit den Limits die in der INI eingestellt sind.
+--- Woot Woot. Funktioniert
