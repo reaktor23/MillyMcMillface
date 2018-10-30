@@ -259,10 +259,12 @@ net Y-neg-lim		hm2_7i96.0.gpio.003.in_not => joint.1.neg-lim-sw-in
 net Z-pos-home-lim	hm2_7i96.0.gpio.000.in_not => joint.2.pos-lim-sw-in joint.2.home-sw-in
 net Z-neg-lim		hm2_7i96.0.gpio.001.in_not => joint.2.neg-lim-sw-in
 
+####
+#POWER
+####
+net valentin_power_on halui.machine.is-on => hm2_7i96.0.ssr.00.out-00
 
-######
-# POWER
-######
-
-#net	einschalten		emcmot.00.enable => hm2_7i96.0.ssr.00.out-00
-#net e-stop 	hm2_7i96.0.gpio.006.in => 
+####
+#E-STOP
+####
+net valentin-e-stop hm2_7i96.0.gpio.006.in_not => halui.estop.activate
