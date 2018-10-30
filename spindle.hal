@@ -6,8 +6,8 @@ loadusr -Wn spindle-vfd hy_vfd -n spindle-vfd -t 1 -d /dev/spindle0 -p none -r 3
 
 #net vfd-comms halui.machine.is-on => spindle-vfd.enable
 setp spindle-vfd.enable 1
-net spindle-fwd motion.spindle-forward => spindle-vfd.spindle-forward
-net spindle-reverse motion.spindle-reverse => spindle-vfd.spindle-reverse
-net spindle-speed-cmd  motion.spindle-speed-out-abs => spindle-vfd.speed-command
-net spindle-on motion.spindle-on => spindle-vfd.spindle-on
-net spindle-at-speed motion.spindle-at-speed => spindle-vfd.spindle-at-speed
+net spindle-fwd spindle.0.forward => spindle-vfd.spindle-forward
+net spindle-reverse spindle.0.reverse => spindle-vfd.spindle-reverse
+net spindle-speed-cmd  spindle.0.speed-out-abs => spindle-vfd.speed-command
+net spindle-on spindle.0.on => spindle-vfd.spindle-on
+net spindle-at-speed spindle.0.at-speed => spindle-vfd.spindle-at-speed

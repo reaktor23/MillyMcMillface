@@ -233,7 +233,7 @@ setp pid.3.maxerror [SPINDLE_9]MAX_ERROR
 #setp hm2_[HOSTMOT2](BOARD).0.7i76.0.0.spinout-minlim [SPINDLE_9]MINLIM
 #setp hm2_[HOSTMOT2](BOARD).0.7i76.0.0.spinout-maxlim [SPINDLE_9]MAXLIM
 
-net spindle-index-enable <=> hm2_[HOSTMOT2](BOARD).0.encoder.00.index-enable <=> motion.spindle-index-enable
+net spindle-index-enable <=> hm2_[HOSTMOT2](BOARD).0.encoder.00.index-enable <=> spindle.0.index-enable
 # ##################################################
 # Standard I/O Block - EStop, Etc
 # ##################################################
