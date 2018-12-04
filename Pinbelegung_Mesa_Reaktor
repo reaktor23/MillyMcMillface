@@ -1,0 +1,23 @@
+Endschalter
+
+	X	min	hm2_7i96.0.gpio.005.
+		max	hm2_7i96.0.gpio.004.
+
+	Y	min	hm2_7i96.0.gpio.003.
+		max	hm2_7i96.0.gpio.002.
+
+	Z	min	hm2_7i96.0.gpio.001.
+		max	hm2_7i96.0.gpio.000.in_not
+
+Meldekontakt Notaus
+	hm2_7i96.0.gpio.006.in_not
+
+Meldekontakt FU
+	hm2_7i96.0.gpio.00.7.
+
+Schütz:
+	hm2_7i96.0.ssr.00.out-00
+
+
+ssr steuern:
+setp hm2_7i96.0.ssr.00.out-00 1
