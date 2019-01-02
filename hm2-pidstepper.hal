@@ -89,7 +89,9 @@ net emcmot.00.enable => hm2_[HOSTMOT2](BOARD).0.stepgen.00.enable pid.0.enable
 
 
 # position command and feedback
+
 net emcmot.00.pos-cmd joint.0.motor-pos-cmd => pid.0.command
+
 #net emcmot.00.vel-cmd joint.0.vel-cmd => pid.0.command-deriv
 net motor.00.pos-fb <= hm2_[HOSTMOT2](BOARD).0.stepgen.00.position-fb joint.0.motor-pos-fb pid.0.feedback
 net motor.00.command pid.0.output hm2_[HOSTMOT2](BOARD).0.stepgen.00.velocity-cmd
@@ -121,7 +123,7 @@ setp pid.0.FF1 [JOINT_0]FF1
 setp pid.0.FF2 [JOINT_0]FF2
 setp pid.0.deadband [JOINT_0]DEADBAND
 setp pid.0.maxoutput [JOINT_0]MAX_OUTPUT
-setp pid.0.maxerror [JOINT_0]MAX_ERROR
+#setp pid.0.maxerror [JOINT_0]MAX_ERROR
 
 # ################
 # Y [1] Axis
@@ -166,7 +168,7 @@ setp pid.1.FF1 [JOINT_1]FF1
 setp pid.1.FF2 [JOINT_1]FF2
 setp pid.1.deadband [JOINT_1]DEADBAND
 setp pid.1.maxoutput [JOINT_1]MAX_OUTPUT
-setp pid.1.maxerror [JOINT_1]MAX_ERROR
+#setp pid.1.maxerror [JOINT_1]MAX_ERROR
 
 # ################
 # Z [2] Axis
@@ -213,7 +215,7 @@ setp pid.2.FF1 [JOINT_2]FF1
 setp pid.2.FF2 [JOINT_2]FF2
 setp pid.2.deadband [JOINT_2]DEADBAND
 setp pid.2.maxoutput [JOINT_2]MAX_OUTPUT
-setp pid.2.maxerror [JOINT_2]MAX_ERROR
+#setp pid.2.maxerror [JOINT_2]MAX_ERROR
 
 # Spindle control
 

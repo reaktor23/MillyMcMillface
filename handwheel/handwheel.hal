@@ -1,0 +1,52 @@
+# Load our handwheel.py script as handwheel (symlinked from ~/linuxcnc/handwheel.py -> /usr/bin/handwheel)
+loadusr -Wn handwheel handwheel
+
+#net handwheel.plus
+
+# Jog Pendant
+# loadrt encoder num_chan=1
+# addf encoder.capture-position servo-thread
+# addf encoder.update-counters base-thread
+#
+# # If your MPG outputs a quadrature signal per click set x4 to 1
+# # If your MPG puts out 1 pulse per click set x4 to 0
+# setp encoder.0.x4-mode 0
+#
+# # For velocity mode, set to 1
+# # In velocity mode the axis stops when the dial is stopped
+# # even if that means the commanded motion is not completed,
+# # For position mode (the default), set to 0
+# # In position mode the axis will move exactly jog-scale
+# # units for each count, regardless of how long that might take,
+setp axis.x.jog-vel-mode 1
+setp axis.y.jog-vel-mode 1
+setp axis.z.jog-vel-mode 1
+#
+# # This sets the scale that will be used based on the input to the mux4
+#
+# # The inputs to the mux4 component
+# net scale1 mux4.0.sel0 <= parport.1.pin-09-in
+# net scale2 mux4.0.sel1 <= parport.1.pin-10-in
+#
+# # The output from the mux4 is sent to each axis jog scale
+net handwheel-scale <= handwheel.scale
+net handwheel-scale => axis.x.jog-scale 
+net handwheel-scale => axis.y.jog-scale 
+net handwheel-scale => axis.z.jog-scale
+# net mpg-scale => axis.1.jog-scale
+# net mpg-scale => axis.2.jog-scale
+#
+# # The MPG inputs
+# net mpg-a encoder.0.phase-A <= parport.1.pin-02-in
+# net mpg-b encoder.0.phase-B <= parport.1.pin-03-in
+#
+# # The Axis select inputs
+net handwheel-enable-x handwheel.enable-x axis.x.jog-enable
+net handwheel-enable-y handwheel.enable-y axis.y.jog-enable
+net handwheel-enable-z handwheel.enable-z axis.z.jog-enable
+#
+# # The encoder output counts to the axis. Only the selected axis will move.
+net handwheel-counts <= handwheel.encoder
+net handwheel-counts => axis.x.jog-counts
+net handwheel-counts => axis.y.jog-counts
+net handwheel-counts => axis.z.jog-counts
