@@ -1,13 +1,17 @@
-# Include your customized HAL commands here
-# This file will not be overwritten when you run stepconf again
+# Huanyang spindle control over USB/RS485 connection
+# http://linuxcnc.org/docs/html/man/man1/hy_vfd.1.html
 
 # Load the Huanyang VFD user component
 loadusr -Wn spindle-vfd hy_vfd -n spindle-vfd -t 1 -d /dev/ttyUSB0 -p none -r 38400 -s 1
 
-#net vfd-comms halui.machine.is-on => spindle-vfd.enable
+# TODO
+# Maybe we should consider to enable the spindle dynamicaly!?
+# net vfd-comms halui.machine.is-on => spindle-vfd.enable
 setp spindle-vfd.enable 1
-net spindle-fwd spindle.0.forward => spindle-vfd.spindle-forward
-net spindle-reverse spindle.0.reverse => spindle-vfd.spindle-reverse
-net spindle-speed-cmd  spindle.0.speed-out-abs => spindle-vfd.speed-command
-net spindle-on spindle.0.on => spindle-vfd.spindle-on
-net spindle-at-speed spindle.0.at-speed => spindle-vfd.spindle-at-speed
+
+# connect spindle related signals
+net spindle-fwd 	spindle.0.forward 	=> spindle-vfd.spindle-forward
+net spindle-reverse 	spindle.0.reverse 	=> spindle-vfd.spindle-reverse
+net spindle-speed-cmd  	spindle.0.speed-out-abs => spindle-vfd.speed-command
+net spindle-on 		spindle.0.on 		=> spindle-vfd.spindle-on
+net spindle-at-speed 	spindle.0.at-speed 	=> spindle-vfd.spindle-at-speed
