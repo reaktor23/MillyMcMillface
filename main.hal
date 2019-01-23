@@ -93,8 +93,9 @@ setp hm2_[HOSTMOT2](BOARD).0.encoder.[JOINT_0](ENCODER).index-mask              
 setp hm2_[HOSTMOT2](BOARD).0.encoder.[JOINT_0](ENCODER).index-mask-invert       0
 setp hm2_[HOSTMOT2](BOARD).0.encoder.[JOINT_0](ENCODER).scale 			        [JOINT_0]ENCODER_SCALE
 
-net X-pos-lim 		                                        joint.0.pos-lim-sw-in   => hm2_[HOSTMOT2](BOARD).0.gpio.004.in_not 
-net X-neg-lim-home	                joint.0.home-sw-in      joint.0.neg-lim-sw-in   => hm2_[HOSTMOT2](BOARD).0.gpio.005.in_not
+net X-pos-lim   joint.0.pos-lim-sw-in   => hm2_[HOSTMOT2](BOARD).0.gpio.[JOINT_0](POS_LIMIT_SW).in_not 
+net X-neg-lim	joint.0.neg-lim-sw-in   => hm2_[HOSTMOT2](BOARD).0.gpio.[JOINT_0](NEG_LIMIT_SW).in_not
+net X-home      joint.0.home-sw-in      => hm2_[HOSTMOT2](BOARD).0.gpio.[JOINT_0](NEG_LIMIT_SW).in_not
 
 # ################
 # Y [1] Axis
@@ -134,8 +135,9 @@ setp hm2_[HOSTMOT2](BOARD).0.encoder.[JOINT_1](ENCODER).index-mask              
 setp hm2_[HOSTMOT2](BOARD).0.encoder.[JOINT_1](ENCODER).index-mask-invert       0
 setp hm2_[HOSTMOT2](BOARD).0.encoder.[JOINT_1](ENCODER).scale 			        [JOINT_1]ENCODER_SCALE
 
-net Y-neg-lim 		                    joint.1.neg-lim-sw-in   => hm2_[HOSTMOT2](BOARD).0.gpio.003.in_not 
-net Y-pos-lim-home  joint.1.home-sw-in  joint.1.pos-lim-sw-in   => hm2_[HOSTMOT2](BOARD).0.gpio.002.in_not
+net Y-pos-lim   joint.1.pos-lim-sw-in   => hm2_[HOSTMOT2](BOARD).0.gpio.[JOINT_1](POS_LIMIT_SW).in_not 
+net Y-neg-lim	joint.1.neg-lim-sw-in   => hm2_[HOSTMOT2](BOARD).0.gpio.[JOINT_1](NEG_LIMIT_SW).in_not
+net Y-home      joint.1.home-sw-in      => hm2_[HOSTMOT2](BOARD).0.gpio.[JOINT_1](NEG_LIMIT_SW).in_not
 
 # ################
 # Z [2] Axis
@@ -175,8 +177,9 @@ setp hm2_[HOSTMOT2](BOARD).0.encoder.[JOINT_2](ENCODER).index-mask              
 setp hm2_[HOSTMOT2](BOARD).0.encoder.[JOINT_2](ENCODER).index-mask-invert       0
 setp hm2_[HOSTMOT2](BOARD).0.encoder.[JOINT_2](ENCODER).scale 			        [JOINT_2]ENCODER_SCALE
 
-net Z-neg-lim 		                    joint.2.neg-lim-sw-in   => hm2_[HOSTMOT2](BOARD).0.gpio.001.in_not 
-net Z-pos-lim-home  joint.2.home-sw-in  joint.2.pos-lim-sw-in   => hm2_[HOSTMOT2](BOARD).0.gpio.000.in_not
+net Z-pos-lim   joint.2.pos-lim-sw-in   => hm2_[HOSTMOT2](BOARD).0.gpio.[JOINT_2](POS_LIMIT_SW).in_not 
+net Z-neg-lim	joint.2.neg-lim-sw-in   => hm2_[HOSTMOT2](BOARD).0.gpio.[JOINT_2](NEG_LIMIT_SW).in_not
+net Z-home      joint.2.home-sw-in      => hm2_[HOSTMOT2](BOARD).0.gpio.[JOINT_2](NEG_LIMIT_SW).in_not
 
 # ##################################################
 # Standard I/O Block - EStop, Etc
