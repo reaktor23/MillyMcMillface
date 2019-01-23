@@ -18,7 +18,6 @@
 # Core EMC/HAL Loads
 # ###################################
 
-
 # kinematics
 loadrt [KINS]KINEMATICS
 #autoconverted  trivkins
@@ -27,7 +26,7 @@ loadrt [KINS]KINEMATICS
 loadrt [EMCMOT]EMCMOT servo_period_nsec=[EMCMOT]SERVO_PERIOD num_joints=[KINS]JOINTS 
 
 # standard components
-loadrt pid num_chan=4 
+loadrt pid num_chan=3 
 
 # hostmot2 driver
 loadrt hostmot2
@@ -37,7 +36,6 @@ loadrt [HOSTMOT2](DRIVER) config=[HOSTMOT2](CONFIG)
 
 setp hm2_[HOSTMOT2](BOARD).0.watchdog.timeout_ns 25000000
 
-
 # ################################################
 # THREADS
 # ################################################
@@ -45,13 +43,10 @@ setp hm2_[HOSTMOT2](BOARD).0.watchdog.timeout_ns 25000000
 addf hm2_[HOSTMOT2](BOARD).0.read         servo-thread
 addf motion-command-handler               servo-thread
 addf motion-controller                    servo-thread
-addf pid.0.do-pid-calcs                   servo-thread
-addf pid.1.do-pid-calcs                   servo-thread
-addf pid.2.do-pid-calcs                   servo-thread
-addf pid.3.do-pid-calcs                   servo-thread
+addf pid.[JOINT_0](PID).do-pid-calcs      servo-thread
+addf pid.[JOINT_1](PID).do-pid-calcs      servo-thread
+addf pid.[JOINT_2](PID).do-pid-calcs      servo-thread
 addf hm2_[HOSTMOT2](BOARD).0.write        servo-thread
-#addf hm2_[HOSTMOT2](BOARD).0.pet_watchdog servo-thread
-       
 
 # latch 50 usec before nominal read time:
 setp hm2_[HOSTMOT2](BOARD).0.dpll.01.timer-us -50
@@ -60,240 +55,141 @@ setp hm2_[HOSTMOT2](BOARD).0.stepgen.timer-number 1
 # set packet read timeout to 20% of servo thread
 setp hm2_[HOSTMOT2](BOARD).0.packet-read-timeout 70
 
-# ######################################################
-# Axis-of-motion Specific Configs (not the GUI)
-# ######################################################
-
-newsig Enable bit
-sets Enable TRUE
-
-
 # ################
 # X [0] Axis
 # ################
 
+setp pid.[JOINT_0](PID).Pgain        [JOINT_0]P
+setp pid.[JOINT_0](PID).Igain        [JOINT_0]I
+setp pid.[JOINT_0](PID).Dgain        [JOINT_0]D
+setp pid.[JOINT_0](PID).bias         [JOINT_0]BIAS
+setp pid.[JOINT_0](PID).FF0          [JOINT_0]FF0
+setp pid.[JOINT_0](PID).FF1          [JOINT_0]FF1
+setp pid.[JOINT_0](PID).FF2          [JOINT_0]FF2
+setp pid.[JOINT_0](PID).deadband     [JOINT_0]DEADBAND
+setp pid.[JOINT_0](PID).maxoutput    [JOINT_0]MAX_OUTPUT
 
-setp pid.0.Pgain        [JOINT_0]P
-setp pid.0.Igain        [JOINT_0]I
-setp pid.0.Dgain        [JOINT_0]D
-setp pid.0.bias         [JOINT_0]BIAS
-setp pid.0.FF0          [JOINT_0]FF0
-setp pid.0.FF1          [JOINT_0]FF1
-setp pid.0.FF2          [JOINT_0]FF2
-setp pid.0.deadband     [JOINT_0]DEADBAND
-setp pid.0.maxoutput    [JOINT_0]MAX_OUTPUT
+net x-index-enable  pid.[JOINT_0](PID).index-enable      <= joint.0.index-enable     => hm2_[HOSTMOT2](BOARD).0.encoder.[JOINT_0](ENCODER).index-enable  
+net x-enable        pid.[JOINT_0](PID).enable            <= joint.0.amp-enable-out   => hm2_[HOSTMOT2](BOARD).0.stepgen.[JOINT_0](STEPGEN).enable 
+net x-output        pid.[JOINT_0](PID).output                                        => hm2_[HOSTMOT2](BOARD).0.stepgen.[JOINT_0](STEPGEN).velocity-cmd
+net x-pos-cmd       pid.[JOINT_0](PID).command           <= joint.0.motor-pos-cmd
+net x-vel-fb        pid.[JOINT_0](PID).feedback-deriv                                => hm2_[HOSTMOT2](BOARD).0.encoder.[JOINT_0](ENCODER).velocity     
+net x-pos-fb        pid.[JOINT_0](PID).feedback          <= joint.0.motor-pos-fb     => hm2_[HOSTMOT2](BOARD).0.encoder.[JOINT_0](ENCODER).position    
 
-net x-index-enable  pid.0.index-enable      <= joint.0.index-enable     => hm2_[HOSTMOT2](BOARD).0.encoder.04.index-enable  
-net x-enable        pid.0.enable            <= joint.0.amp-enable-out   => hm2_[HOSTMOT2](BOARD).0.stepgen.00.enable 
-net x-output        pid.0.output                                        => hm2_[HOSTMOT2](BOARD).0.stepgen.00.velocity-cmd
-net x-pos-cmd       pid.0.command           <= joint.0.motor-pos-cmd
-net x-vel-fb        pid.0.feedback-deriv                                => hm2_[HOSTMOT2](BOARD).0.encoder.04.velocity     
-net x-pos-fb        pid.0.feedback          <= joint.0.motor-pos-fb     => hm2_[HOSTMOT2](BOARD).0.encoder.04.position    
+setp hm2_[HOSTMOT2](BOARD).0.stepgen.[JOINT_0](STEPGEN).dirsetup                [JOINT_0]DIRSETUP
+setp hm2_[HOSTMOT2](BOARD).0.stepgen.[JOINT_0](STEPGEN).dirhold                 [JOINT_0]DIRHOLD
+setp hm2_[HOSTMOT2](BOARD).0.stepgen.[JOINT_0](STEPGEN).steplen                 [JOINT_0]STEPLEN
+setp hm2_[HOSTMOT2](BOARD).0.stepgen.[JOINT_0](STEPGEN).stepspace               [JOINT_0]STEPSPACE
+setp hm2_[HOSTMOT2](BOARD).0.stepgen.[JOINT_0](STEPGEN).position-scale          [JOINT_0]SCALE
+setp hm2_[HOSTMOT2](BOARD).0.stepgen.[JOINT_0](STEPGEN).step_type               0
+setp hm2_[HOSTMOT2](BOARD).0.stepgen.[JOINT_0](STEPGEN).control-type            1
+setp hm2_[HOSTMOT2](BOARD).0.stepgen.[JOINT_0](STEPGEN).maxvel                  [JOINT_0]STEPGEN_MAX_VEL
+setp hm2_[HOSTMOT2](BOARD).0.stepgen.[JOINT_0](STEPGEN).maxaccel                [JOINT_0]STEPGEN_MAX_ACC
 
-setp hm2_[HOSTMOT2](BOARD).0.stepgen.00.dirsetup                [JOINT_0]DIRSETUP
-setp hm2_[HOSTMOT2](BOARD).0.stepgen.00.dirhold                 [JOINT_0]DIRHOLD
-setp hm2_[HOSTMOT2](BOARD).0.stepgen.00.steplen                 [JOINT_0]STEPLEN
-setp hm2_[HOSTMOT2](BOARD).0.stepgen.00.stepspace               [JOINT_0]STEPSPACE
-setp hm2_[HOSTMOT2](BOARD).0.stepgen.00.position-scale          [JOINT_0]SCALE
-setp hm2_[HOSTMOT2](BOARD).0.stepgen.00.step_type               0
-setp hm2_[HOSTMOT2](BOARD).0.stepgen.00.control-type            1
-setp hm2_[HOSTMOT2](BOARD).0.stepgen.00.maxvel                  [JOINT_0]STEPGEN_MAX_VEL
-setp hm2_[HOSTMOT2](BOARD).0.stepgen.00.maxaccel                [JOINT_0]STEPGEN_MAX_ACC
+setp hm2_[HOSTMOT2](BOARD).0.encoder.[JOINT_0](ENCODER).counter-mode            0
+setp hm2_[HOSTMOT2](BOARD).0.encoder.[JOINT_0](ENCODER).filter                  1
+setp hm2_[HOSTMOT2](BOARD).0.encoder.[JOINT_0](ENCODER).index-invert            0
+setp hm2_[HOSTMOT2](BOARD).0.encoder.[JOINT_0](ENCODER).index-mask              0
+setp hm2_[HOSTMOT2](BOARD).0.encoder.[JOINT_0](ENCODER).index-mask-invert       0
+setp hm2_[HOSTMOT2](BOARD).0.encoder.[JOINT_0](ENCODER).scale 			        [JOINT_0]ENCODER_SCALE
 
-setp hm2_[HOSTMOT2](BOARD).0.encoder.04.counter-mode            0
-setp hm2_[HOSTMOT2](BOARD).0.encoder.04.filter                  1
-setp hm2_[HOSTMOT2](BOARD).0.encoder.04.index-invert            0
-setp hm2_[HOSTMOT2](BOARD).0.encoder.04.index-mask              0
-setp hm2_[HOSTMOT2](BOARD).0.encoder.04.index-mask-invert       0
-setp hm2_[HOSTMOT2](BOARD).0.encoder.04.scale 			[JOINT_0]ENCODER_SCALE
-
-## axis enable chain
-#newsig emcmot.00.enable bit
-#sets emcmot.00.enable FALSE
-#
-#net emcmot.00.enable <= joint.0.amp-enable-out 
-#net emcmot.00.enable => hm2_[HOSTMOT2](BOARD).0.stepgen.00.enable pid.0.enable
-#
-#
-## position command and feedback
-#
-#net emcmot.00.pos-cmd joint.0.motor-pos-cmd => pid.0.command
-#
-##net emcmot.00.vel-cmd joint.0.vel-cmd => pid.0.command-deriv
-#net motor.00.pos-fb <= hm2_[HOSTMOT2](BOARD).0.stepgen.00.position-fb joint.0.motor-pos-fb pid.0.feedback
-#net motor.00.command pid.0.output hm2_[HOSTMOT2](BOARD).0.stepgen.00.velocity-cmd
-#setp pid.0.error-previous-target true
-#
-#
-## timing parameters
-#setp hm2_[HOSTMOT2](BOARD).0.stepgen.00.dirsetup        [JOINT_0]DIRSETUP
-#setp hm2_[HOSTMOT2](BOARD).0.stepgen.00.dirhold         [JOINT_0]DIRHOLD
-#
-#setp hm2_[HOSTMOT2](BOARD).0.stepgen.00.steplen         [JOINT_0]STEPLEN
-#setp hm2_[HOSTMOT2](BOARD).0.stepgen.00.stepspace       [JOINT_0]STEPSPACE
-#
-#setp hm2_[HOSTMOT2](BOARD).0.stepgen.00.position-scale  [JOINT_0]SCALE
-#
-#setp hm2_[HOSTMOT2](BOARD).0.stepgen.00.maxvel          [JOINT_0]STEPGEN_MAX_VEL
-#setp hm2_[HOSTMOT2](BOARD).0.stepgen.00.maxaccel        [JOINT_0]STEPGEN_MAX_ACC
-#
-#setp hm2_[HOSTMOT2](BOARD).0.stepgen.00.step_type       0
-#setp hm2_[HOSTMOT2](BOARD).0.stepgen.00.control-type    1
-#
-## set PID loop gains from inifile
-#setp pid.0.Pgain [JOINT_0]P
-#setp pid.0.Igain [JOINT_0]I
-#setp pid.0.Dgain [JOINT_0]D
-#setp pid.0.bias [JOINT_0]BIAS
-#setp pid.0.FF0 [JOINT_0]FF0
-#setp pid.0.FF1 [JOINT_0]FF1
-#setp pid.0.FF2 [JOINT_0]FF2
-#setp pid.0.deadband [JOINT_0]DEADBAND
-#setp pid.0.maxoutput [JOINT_0]MAX_OUTPUT
-##setp pid.0.maxerror [JOINT_0]MAX_ERROR
+net X-pos-lim 		                                        joint.0.pos-lim-sw-in   => hm2_[HOSTMOT2](BOARD).0.gpio.004.in_not 
+net X-neg-lim-home	                joint.0.home-sw-in      joint.0.neg-lim-sw-in   => hm2_[HOSTMOT2](BOARD).0.gpio.005.in_not
 
 # ################
 # Y [1] Axis
 # ################
 
-# axis enable chain
-newsig emcmot.01.enable bit
-sets emcmot.01.enable FALSE
+setp pid.[JOINT_1](PID).Pgain        [JOINT_1]P
+setp pid.[JOINT_1](PID).Igain        [JOINT_1]I
+setp pid.[JOINT_1](PID).Dgain        [JOINT_1]D
+setp pid.[JOINT_1](PID).bias         [JOINT_1]BIAS
+setp pid.[JOINT_1](PID).FF0          [JOINT_1]FF0
+setp pid.[JOINT_1](PID).FF1          [JOINT_1]FF1
+setp pid.[JOINT_1](PID).FF2          [JOINT_1]FF2
+setp pid.[JOINT_1](PID).deadband     [JOINT_1]DEADBAND
+setp pid.[JOINT_1](PID).maxoutput    [JOINT_1]MAX_OUTPUT
 
-net emcmot.01.enable <= joint.1.amp-enable-out 
-net emcmot.01.enable => hm2_[HOSTMOT2](BOARD).0.stepgen.01.enable pid.1.enable
+net Y-index-enable  pid.[JOINT_1](PID).index-enable      <= joint.1.index-enable     => hm2_[HOSTMOT2](BOARD).0.encoder.[JOINT_1](ENCODER).index-enable  
+net Y-enable        pid.[JOINT_1](PID).enable            <= joint.1.amp-enable-out   => hm2_[HOSTMOT2](BOARD).0.stepgen.[JOINT_1](STEPGEN).enable 
+net Y-output        pid.[JOINT_1](PID).output                                        => hm2_[HOSTMOT2](BOARD).0.stepgen.[JOINT_1](STEPGEN).velocity-cmd
+net Y-pos-cmd       pid.[JOINT_1](PID).command           <= joint.1.motor-pos-cmd
+net Y-vel-fb        pid.[JOINT_1](PID).feedback-deriv                                => hm2_[HOSTMOT2](BOARD).0.encoder.[JOINT_1](ENCODER).velocity     
+net Y-pos-fb        pid.[JOINT_1](PID).feedback          <= joint.1.motor-pos-fb     => hm2_[HOSTMOT2](BOARD).0.encoder.[JOINT_1](ENCODER).position    
 
-# position command and feedback
-net emcmot.01.pos-cmd joint.1.motor-pos-cmd => pid.1.command
-#net emcmot.01.vel-cmd joint.1.vel-cmd => pid.1.command-deriv
-net motor.01.pos-fb <= hm2_[HOSTMOT2](BOARD).0.stepgen.01.position-fb joint.1.motor-pos-fb pid.1.feedback
-net motor.01.command pid.1.output hm2_[HOSTMOT2](BOARD).0.stepgen.01.velocity-cmd
-setp pid.1.error-previous-target true
+setp hm2_[HOSTMOT2](BOARD).0.stepgen.[JOINT_1](STEPGEN).dirsetup                [JOINT_1]DIRSETUP
+setp hm2_[HOSTMOT2](BOARD).0.stepgen.[JOINT_1](STEPGEN).dirhold                 [JOINT_1]DIRHOLD
+setp hm2_[HOSTMOT2](BOARD).0.stepgen.[JOINT_1](STEPGEN).steplen                 [JOINT_1]STEPLEN
+setp hm2_[HOSTMOT2](BOARD).0.stepgen.[JOINT_1](STEPGEN).stepspace               [JOINT_1]STEPSPACE
+setp hm2_[HOSTMOT2](BOARD).0.stepgen.[JOINT_1](STEPGEN).position-scale          [JOINT_1]SCALE
+setp hm2_[HOSTMOT2](BOARD).0.stepgen.[JOINT_1](STEPGEN).step_type               0
+setp hm2_[HOSTMOT2](BOARD).0.stepgen.[JOINT_1](STEPGEN).control-type            1
+setp hm2_[HOSTMOT2](BOARD).0.stepgen.[JOINT_1](STEPGEN).maxvel                  [JOINT_1]STEPGEN_MAX_VEL
+setp hm2_[HOSTMOT2](BOARD).0.stepgen.[JOINT_1](STEPGEN).maxaccel                [JOINT_1]STEPGEN_MAX_ACC
 
-# timing parameters
-setp hm2_[HOSTMOT2](BOARD).0.stepgen.01.dirsetup        [JOINT_1]DIRSETUP
-setp hm2_[HOSTMOT2](BOARD).0.stepgen.01.dirhold         [JOINT_1]DIRHOLD
+setp hm2_[HOSTMOT2](BOARD).0.encoder.[JOINT_1](ENCODER).counter-mode            0
+setp hm2_[HOSTMOT2](BOARD).0.encoder.[JOINT_1](ENCODER).filter                  1
+setp hm2_[HOSTMOT2](BOARD).0.encoder.[JOINT_1](ENCODER).index-invert            0
+setp hm2_[HOSTMOT2](BOARD).0.encoder.[JOINT_1](ENCODER).index-mask              0
+setp hm2_[HOSTMOT2](BOARD).0.encoder.[JOINT_1](ENCODER).index-mask-invert       0
+setp hm2_[HOSTMOT2](BOARD).0.encoder.[JOINT_1](ENCODER).scale 			        [JOINT_1]ENCODER_SCALE
 
-setp hm2_[HOSTMOT2](BOARD).0.stepgen.01.steplen         [JOINT_1]STEPLEN
-setp hm2_[HOSTMOT2](BOARD).0.stepgen.01.stepspace       [JOINT_1]STEPSPACE
-
-setp hm2_[HOSTMOT2](BOARD).0.stepgen.01.position-scale  [JOINT_1]SCALE
-
-setp hm2_[HOSTMOT2](BOARD).0.stepgen.01.maxvel          [JOINT_1]STEPGEN_MAX_VEL
-setp hm2_[HOSTMOT2](BOARD).0.stepgen.01.maxaccel        [JOINT_1]STEPGEN_MAX_ACC
-
-setp hm2_[HOSTMOT2](BOARD).0.stepgen.01.step_type       0
-setp hm2_[HOSTMOT2](BOARD).0.stepgen.01.control-type    1
-
-# set PID loop gains from inifile
-setp pid.1.Pgain [JOINT_1]P
-setp pid.1.Igain [JOINT_1]I
-setp pid.1.Dgain [JOINT_1]D
-setp pid.1.bias [JOINT_1]BIAS
-setp pid.1.FF0 [JOINT_1]FF0
-setp pid.1.FF1 [JOINT_1]FF1
-setp pid.1.FF2 [JOINT_1]FF2
-setp pid.1.deadband [JOINT_1]DEADBAND
-setp pid.1.maxoutput [JOINT_1]MAX_OUTPUT
-#setp pid.1.maxerror [JOINT_1]MAX_ERROR
+net Y-neg-lim 		                    joint.1.neg-lim-sw-in   => hm2_[HOSTMOT2](BOARD).0.gpio.003.in_not 
+net Y-pos-lim-home  joint.1.home-sw-in  joint.1.pos-lim-sw-in   => hm2_[HOSTMOT2](BOARD).0.gpio.002.in_not
 
 # ################
 # Z [2] Axis
 # ################
 
-# axis enable chain
-newsig emcmot.02.enable bit
-sets emcmot.02.enable FALSE
+setp pid.[JOINT_2](PID).Pgain        [JOINT_2]P
+setp pid.[JOINT_2](PID).Igain        [JOINT_2]I
+setp pid.[JOINT_2](PID).Dgain        [JOINT_2]D
+setp pid.[JOINT_2](PID).bias         [JOINT_2]BIAS
+setp pid.[JOINT_2](PID).FF0          [JOINT_2]FF0
+setp pid.[JOINT_2](PID).FF1          [JOINT_2]FF1
+setp pid.[JOINT_2](PID).FF2          [JOINT_2]FF2
+setp pid.[JOINT_2](PID).deadband     [JOINT_2]DEADBAND
+setp pid.[JOINT_2](PID).maxoutput    [JOINT_2]MAX_OUTPUT
 
-net emcmot.02.enable <= joint.2.amp-enable-out 
-net emcmot.02.enable => hm2_[HOSTMOT2](BOARD).0.stepgen.02.enable pid.2.enable
+net Z-index-enable  pid.[JOINT_2](PID).index-enable      <= joint.2.index-enable     => hm2_[HOSTMOT2](BOARD).0.encoder.[JOINT_2](ENCODER).index-enable  
+net Z-enable        pid.[JOINT_2](PID).enable            <= joint.2.amp-enable-out   => hm2_[HOSTMOT2](BOARD).0.stepgen.[JOINT_2](STEPGEN).enable 
+net Z-output        pid.[JOINT_2](PID).output                                        => hm2_[HOSTMOT2](BOARD).0.stepgen.[JOINT_2](STEPGEN).velocity-cmd
+net Z-pos-cmd       pid.[JOINT_2](PID).command           <= joint.2.motor-pos-cmd
+net Z-vel-fb        pid.[JOINT_2](PID).feedback-deriv                                => hm2_[HOSTMOT2](BOARD).0.encoder.[JOINT_2](ENCODER).velocity     
+net Z-pos-fb        pid.[JOINT_2](PID).feedback          <= joint.2.motor-pos-fb     => hm2_[HOSTMOT2](BOARD).0.encoder.[JOINT_2](ENCODER).position    
 
+setp hm2_[HOSTMOT2](BOARD).0.stepgen.[JOINT_2](STEPGEN).dirsetup                [JOINT_2]DIRSETUP
+setp hm2_[HOSTMOT2](BOARD).0.stepgen.[JOINT_2](STEPGEN).dirhold                 [JOINT_2]DIRHOLD
+setp hm2_[HOSTMOT2](BOARD).0.stepgen.[JOINT_2](STEPGEN).steplen                 [JOINT_2]STEPLEN
+setp hm2_[HOSTMOT2](BOARD).0.stepgen.[JOINT_2](STEPGEN).stepspace               [JOINT_2]STEPSPACE
+setp hm2_[HOSTMOT2](BOARD).0.stepgen.[JOINT_2](STEPGEN).position-scale          [JOINT_2]SCALE
+setp hm2_[HOSTMOT2](BOARD).0.stepgen.[JOINT_2](STEPGEN).step_type               0
+setp hm2_[HOSTMOT2](BOARD).0.stepgen.[JOINT_2](STEPGEN).control-type            1
+setp hm2_[HOSTMOT2](BOARD).0.stepgen.[JOINT_2](STEPGEN).maxvel                  [JOINT_2]STEPGEN_MAX_VEL
+setp hm2_[HOSTMOT2](BOARD).0.stepgen.[JOINT_2](STEPGEN).maxaccel                [JOINT_2]STEPGEN_MAX_ACC
 
-# position command and feedback
-net emcmot.02.pos-cmd joint.2.motor-pos-cmd => pid.2.command
-#net emcmot.02.vel-cmd joint.2.vel-cmd => pid.2.command-deriv
-net motor.02.pos-fb <= hm2_[HOSTMOT2](BOARD).0.stepgen.02.position-fb joint.2.motor-pos-fb pid.2.feedback
-net motor.02.command pid.2.output hm2_[HOSTMOT2](BOARD).0.stepgen.02.velocity-cmd
-setp pid.2.error-previous-target true
+setp hm2_[HOSTMOT2](BOARD).0.encoder.[JOINT_2](ENCODER).counter-mode            0
+setp hm2_[HOSTMOT2](BOARD).0.encoder.[JOINT_2](ENCODER).filter                  1
+setp hm2_[HOSTMOT2](BOARD).0.encoder.[JOINT_2](ENCODER).index-invert            0
+setp hm2_[HOSTMOT2](BOARD).0.encoder.[JOINT_2](ENCODER).index-mask              0
+setp hm2_[HOSTMOT2](BOARD).0.encoder.[JOINT_2](ENCODER).index-mask-invert       0
+setp hm2_[HOSTMOT2](BOARD).0.encoder.[JOINT_2](ENCODER).scale 			        [JOINT_2]ENCODER_SCALE
 
+net Z-neg-lim 		                    joint.2.neg-lim-sw-in   => hm2_[HOSTMOT2](BOARD).0.gpio.001.in_not 
+net Z-pos-lim-home  joint.2.home-sw-in  joint.2.pos-lim-sw-in   => hm2_[HOSTMOT2](BOARD).0.gpio.000.in_not
 
-# timing parameters
-setp hm2_[HOSTMOT2](BOARD).0.stepgen.02.dirsetup        [JOINT_2]DIRSETUP
-setp hm2_[HOSTMOT2](BOARD).0.stepgen.02.dirhold         [JOINT_2]DIRHOLD
-
-setp hm2_[HOSTMOT2](BOARD).0.stepgen.02.steplen         [JOINT_2]STEPLEN
-setp hm2_[HOSTMOT2](BOARD).0.stepgen.02.stepspace       [JOINT_2]STEPSPACE
-
-setp hm2_[HOSTMOT2](BOARD).0.stepgen.02.position-scale  [JOINT_2]SCALE
-
-setp hm2_[HOSTMOT2](BOARD).0.stepgen.02.maxvel          [JOINT_2]STEPGEN_MAX_VEL
-setp hm2_[HOSTMOT2](BOARD).0.stepgen.02.maxaccel        [JOINT_2]STEPGEN_MAX_ACC
-
-setp hm2_[HOSTMOT2](BOARD).0.stepgen.02.step_type       0
-setp hm2_[HOSTMOT2](BOARD).0.stepgen.02.control-type    1
-
-# set PID loop gains from inifile
-setp pid.2.Pgain [JOINT_2]P
-setp pid.2.Igain [JOINT_2]I
-setp pid.2.Dgain [JOINT_2]D
-setp pid.2.bias [JOINT_2]BIAS
-setp pid.2.FF0 [JOINT_2]FF0
-setp pid.2.FF1 [JOINT_2]FF1
-setp pid.2.FF2 [JOINT_2]FF2
-setp pid.2.deadband [JOINT_2]DEADBAND
-setp pid.2.maxoutput [JOINT_2]MAX_OUTPUT
-#setp pid.2.maxerror [JOINT_2]MAX_ERROR
-
-# Spindle control
-
-# set PID loop gains from inifile
-setp pid.3.Pgain [SPINDLE_9]P
-setp pid.3.Igain [SPINDLE_9]I
-setp pid.3.Dgain [SPINDLE_9]D
-setp pid.3.bias [SPINDLE_9]BIAS
-setp pid.3.FF0 [SPINDLE_9]FF0
-setp pid.3.FF1 [SPINDLE_9]FF1
-setp pid.3.FF2 [SPINDLE_9]FF2
-setp pid.3.deadband [SPINDLE_9]DEADBAND
-setp pid.3.maxoutput [SPINDLE_9]MAX_OUTPUT
-setp pid.3.maxerror [SPINDLE_9]MAX_ERROR
-
-#setp hm2_[HOSTMOT2](BOARD).0.7i76.0.0.spinout-scalemax [SPINDLE_9]SCALE
-#setp hm2_[HOSTMOT2](BOARD).0.7i76.0.0.spinout-minlim [SPINDLE_9]MINLIM
-#setp hm2_[HOSTMOT2](BOARD).0.7i76.0.0.spinout-maxlim [SPINDLE_9]MAXLIM
-
-net spindle-index-enable <=> hm2_[HOSTMOT2](BOARD).0.encoder.00.index-enable <=> spindle.0.index-enable
 # ##################################################
 # Standard I/O Block - EStop, Etc
 # ##################################################
 
-# create a signal for the estop loopback
-net estop-loop iocontrol.0.user-enable-out => iocontrol.0.emc-enable-in
+# E-Stop
+net estop-loop          iocontrol.0.user-enable-out => iocontrol.0.emc-enable-in
+net machine-e-stop      halui.estop.activate        => hm2_[HOSTMOT2](BOARD).0.gpio.006.in_not 
 
-# create signals for tool loading loopback
-net tool-prep-loop iocontrol.0.tool-prepare => iocontrol.0.tool-prepared
-net tool-change-loop iocontrol.0.tool-change => iocontrol.0.tool-changed
+# Power On
+net machine-power-on    halui.machine.is-on         => hm2_[HOSTMOT2](BOARD).0.ssr.00.out-00
 
+# Tool loading loopback
+net tool-prep-loop      iocontrol.0.tool-prepare    => iocontrol.0.tool-prepared
+net tool-change-loop    iocontrol.0.tool-change     => iocontrol.0.tool-changed
 
-######
-# ENDSCHALTER
-###### 
-
-net X-pos-lim 		hm2_7i96.0.gpio.004.in_not => joint.0.pos-lim-sw-in
-net X-neg-home-lim	hm2_7i96.0.gpio.005.in_not => joint.0.neg-lim-sw-in joint.0.home-sw-in
-
-net Y-pos-home-lim	hm2_7i96.0.gpio.002.in_not => joint.1.pos-lim-sw-in joint.1.home-sw-in
-net Y-neg-lim		hm2_7i96.0.gpio.003.in_not => joint.1.neg-lim-sw-in
-
-net Z-pos-home-lim	hm2_7i96.0.gpio.000.in_not => joint.2.pos-lim-sw-in joint.2.home-sw-in
-net Z-neg-lim		hm2_7i96.0.gpio.001.in_not => joint.2.neg-lim-sw-in
-
-####
-#POWER
-####
-net valentin_power_on halui.machine.is-on => hm2_7i96.0.ssr.00.out-00
-
-####
-#E-STOP
-####
-net valentin-e-stop hm2_7i96.0.gpio.006.in_not => halui.estop.activate
