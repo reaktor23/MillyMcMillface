@@ -1,13 +1,19 @@
 #include <Encoder.h>
 
+
+// defines for the Pin numbers of the buttons
 #define MINUS 5
 #define RAPID 6
 #define PLUS 7
 #define ACT 16 
+// Setting up the encoder on interrupt pins 2 and 3
+// swap 2 and 3 in case the dial works in the wrong direction
 Encoder Enc(3, 2);
- 
+
+// variable for storring the current states
 int states[17];
 
+// check funtion if a change on one of the buttons happend
 void button_minus() {
   int state = !digitalRead(MINUS);
   if(states[MINUS] != state) {
@@ -44,6 +50,8 @@ void button_act() {
   }
 }
 
+// funtion for decoding the left rotary knob
+// Its not actual bcd !
 void bcdswitch_left() {
   int pos;
   int state = 0;
@@ -72,6 +80,8 @@ void bcdswitch_left() {
   }
 }
 
+// funtion for decoding the rigth rotary knob
+// Its not actual bcd !
 void bcdswitch_right() {
   int pos;
   int state = 0;
@@ -100,9 +110,9 @@ void bcdswitch_right() {
   }
 }
 
-
+// initial encoder value
 long oldPosition  = -999;
-
+// funtion for sending the encoder value in case it changed
 void encoder() {
   long newPosition = Enc.read() / 4;
   if (newPosition != oldPosition) {
@@ -112,6 +122,7 @@ void encoder() {
   }
 }
 
+// setup routine
 void setup() {
   for (int i = 5; i <= 16; i++) {
     pinMode(i, INPUT_PULLUP);
@@ -119,6 +130,7 @@ void setup() {
   Serial.begin(115200);
 }
 
+// loop that calls the different check functions
 void loop() {
   bcdswitch_left();
   bcdswitch_right();
