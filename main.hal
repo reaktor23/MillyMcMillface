@@ -1,26 +1,18 @@
 # #######################################
 #
-# HAL file for HostMot2 with 3 steppers
+# HAL file for HostMot2 and Mesa 7i96 + 7i85S 
+# - 3 steppers for X Y Z
+# - 3 encoders for closed loop for those axis
+# - 1 spindle
 #
+# Original file:
 # Derived from Ted Hyde's original hm2-servo config
-#
 # Based up work and discussion with Seb & Peter & Jeff
 # GNU license references - insert here. www.linuxcnc.org
 #
-#
-# ########################################
-# Firmware files are in /lib/firmware/hm2/7i43/
-# Must symlink the hostmot2 firmware directory of sanbox to
-# /lib/firmware before running EMC2...
-# sudo ln -s $HOME/emc2-sandbox/src/hal/drivers/mesa-hostmot2/firmware /lib/firmware/hm2
-#
-# See also:
-# <http://www.linuxcnc.org/docs/devel/html/man/man9/hostmot2.9.html#config%20modparam>
-# and http://wiki.linuxcnc.org/cgi-bin/emcinfo.pl?HostMot2
+# Extended and modified by ioeides and bouni from Reaktor23 Hackerspace
 #
 # #####################################################################
-
-
 
 # ###################################
 # Core EMC/HAL Loads
