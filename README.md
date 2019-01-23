@@ -1,4 +1,4 @@
-# Fraese-Config
+# MillyMcMillface
 
 The configuration of our LinuxCNC / Mesa 7i96 based CNC mill controller
 
