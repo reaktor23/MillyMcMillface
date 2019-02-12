@@ -23,7 +23,7 @@ import time
 
 #First we open the serial port. This should correspond to the port the Arduino
 #is connected to. This can be found in the Arduino IDE in Tools->Serial Port
-PORT = "/dev/ttyUSB1"
+PORT = "/dev/handwheel0"
 ser = serial.Serial(PORT, 115200)
 
 #Now we create the HAL component and its pins
