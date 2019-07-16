@@ -270,3 +270,20 @@ net valentin_power_on halui.machine.is-on => hm2_7i96.0.ssr.00.out-00
 #E-STOP
 ####
 net valentin-e-stop hm2_7i96.0.gpio.006.in_not => halui.estop.activate
+
+####
+#WZ-Längentaster
+####
+net probe-in motion.probe-input <= hm2_7i96.0.gpio.008.in_not
+
+####
+#Signalampel
+####
+net ampel-rot 	motion.digital-out-00 => hm2_7i96.0.ssr.00.out-01 
+net ampel-gelb	motion.digital-out-01 => hm2_7i96.0.ssr.00.out-02
+net ampel-grün	motion.digital-out-02 => hm2_7i96.0.ssr.00.out-03
+
+
+
+
+

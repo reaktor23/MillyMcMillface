@@ -1,6 +1,5 @@
 - Jitterzeug in den Parametern ausrechnen, damit nicht immer Fehler kommen.
 --- https://forum.linuxcnc.org/39-pncconf/30914-maxvel-is-too-big-error-and-stepper-settings-ques
 
-- Von Bouncy erneuerte .ini ausprobieren
+- Bahnverrundung ausschalten
 
-- Timingwerte anpassen

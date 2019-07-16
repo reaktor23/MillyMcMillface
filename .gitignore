@@ -1,2 +1,4 @@
 *.halscope
 nc_files
+*.var
+*.bak
