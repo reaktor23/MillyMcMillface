@@ -250,14 +250,14 @@ net tool-change-loop iocontrol.0.tool-change => iocontrol.0.tool-changed
 # ENDSCHALTER
 ###### 
 
-net X-pos-lim 		hm2_7i96.0.gpio.005.in_not => joint.0.pos-lim-sw-in
-net X-neg-home-lim	hm2_7i96.0.gpio.004.in_not => joint.0.neg-lim-sw-in joint.0.home-sw-in
+net X-pos-lim 		hm2_7i96.0.gpio.000.in_not => joint.0.pos-lim-sw-in
+net X-neg-home-lim	hm2_7i96.0.gpio.001.in_not => joint.0.neg-lim-sw-in joint.0.home-sw-in
 
-net Y-pos-home-lim	hm2_7i96.0.gpio.003.in_not => joint.1.pos-lim-sw-in joint.1.home-sw-in
-net Y-neg-lim		hm2_7i96.0.gpio.002.in_not => joint.1.neg-lim-sw-in
+net Y-pos-home-lim	hm2_7i96.0.gpio.002.in_not => joint.1.pos-lim-sw-in joint.1.home-sw-in
+net Y-neg-lim		hm2_7i96.0.gpio.003.in_not => joint.1.neg-lim-sw-in
 
-net Z-pos-home-lim	hm2_7i96.0.gpio.001.in_not => joint.2.pos-lim-sw-in joint.2.home-sw-in
-net Z-neg-lim		hm2_7i96.0.gpio.000.in_not => joint.2.neg-lim-sw-in
+net Z-pos-home-lim	hm2_7i96.0.gpio.004.in_not => joint.2.pos-lim-sw-in joint.2.home-sw-in
+net Z-neg-lim		hm2_7i96.0.gpio.005.in_not => joint.2.neg-lim-sw-in
 
 ####
 #POWER
